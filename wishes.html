@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="https://cdn.nhandan.vn/assets/web/styles/img/favicon.ico" type="image/x-icon">
+    <title>🎁 Lời Chúc Giáng Sinh 🎁</title>
+    <style>
+        :root {
+            --noel-red: #C0392B;
+            --noel-green: #2ECC71;
+            --noel-gold: #F39C12;
+            --background-dark: #1E1E1E;
+            --text-color: #ECF0F1;
+        }
+
+        body {
+            background-color: var(--background-dark);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            
+            /* Dùng ảnh người dùng làm hình nền */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+        
+        /* Lớp phủ mờ (overlay) để làm nổi bật chữ */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.85); /* Lớp phủ đen mờ */
+            z-index: -1;
+        }
+
+
+        /* Khung chứa lời chúc */
+        #wish-box {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            border-radius: 50%; /* Khung hình tròn */
+            border: 5px solid var(--noel-red);
+            transition: all 0.5s ease-in-out;
+            max-width: 80%;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        #initial-message {
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--noel-gold);
+            line-height: 1.2;
+            text-shadow: 0 0 10px rgba(243, 156, 18, 0.7);
+        }
+
+        /* Khung phản hồi/Cảm ơn */
+        #response-box {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: var(--text-color);
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 15px; /* Khung chữ nhật cạnh tròn */
+            border: 1px solid var(--noel-green);
+            display: none; /* Ban đầu ẩn */
+            font-size: 1.2em;
+            z-index: 10;
+        }
+
+        #final-wish {
+            font-size: 2.5em;
+            color: var(--noel-green);
+            margin-top: 20px;
+            display: none;
+            font-weight: 900;
+            z-index: 10;
+        }
+        
+        .thank-you-button {
+            background-color: var(--noel-red);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+
+        .thank-you-button:hover {
+            background-color: #922B21;
+        }
+
+        /* Link liên kết cá nhân */
+        #my-link {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            background-color: rgba(243, 156, 18, 0.8);
+            border-radius: 10px;
+            text-decoration: none;
+            color: black;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="wish-box" onclick="revealWish()">
+        <p id="initial-message">
+            Cường chúc mừng Giáng sinh bạn <span id="user-name-placeholder"></span>
+        </p>
+    </div>
+
+    <h1 id="final-wish">GIÁNG SINH AN LÀNH! 🎅</h1>
+    
+    <div id="response-box">
+        <p>Cường đã chúc mừng Giáng sinh bạn.</p>
+        <p>Bạn có cảm ơn Cường không?</p>
+        <button class="thank-you-button" onclick="showThankYou()">
+            Có, cảm ơn Cường!
+        </button>
+    </div>
+    
+    <a id="my-link" href="#" target="_blank"></a>
+
+    <script>
+        // Lấy link liên kết cá nhân từ biến đã định nghĩa
+        const MY_LINK = 'https://www.facebook.com/bot.ahihi.505/'; 
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const userName = localStorage.getItem('userName') || 'người bạn thân yêu';
+            const userImage = localStorage.getItem('userImage');
+            
+            const initialMessage = document.getElementById('initial-message');
+            const userNamePlaceholder = document.getElementById('user-name-placeholder');
+            const myLinkElement = document.getElementById('my-link');
+            
+            // Chèn tên người dùng và cấu hình hình nền
+            userNamePlaceholder.textContent = userName + "!"; 
+            initialMessage.innerHTML = initialMessage.innerHTML.replace(' bạn ', ' '); 
+
+            if (userImage) {
+                document.body.style.backgroundImage = `url('${userImage}')`;
+            }
+
+            // Cấu hình Link Liên kết dưới đáy trang
+            myLinkElement.href = MY_LINK;
+            myLinkElement.textContent = 'Link Liên Kết Của Tôi';
+        });
+        
+        let wishRevealed = false;
+
+        function revealWish() {
+            if (wishRevealed) return; 
+
+            document.getElementById('final-wish').style.display = 'block';
+            
+            document.getElementById('wish-box').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('wish-box').style.display = 'none';
+                document.getElementById('response-box').style.display = 'block';
+            }, 500);
+            
+            wishRevealed = true;
+        }
+        
+        // --- HÀM CẬP NHẬT ĐỂ HIỂN THỊ LINK LIÊN KẾT CÁ NHÂN ---
+        function showThankYou() {
+             const responseBox = document.getElementById('response-box');
+             responseBox.innerHTML = `
+                <p>❤️ Cảm ơn bạn! Chúc bạn và gia đình một mùa Giáng sinh an lành và hạnh phúc! ❤️
+                    nếu bạn mún cảm ơn thì ở bên dưới</p>
+                
+                <a class="thank-you-button" href="${MY_LINK}" target="_blank" style="text-decoration: none;">
+                    cảm ơn ở đây
+                </a>
+             `;
+             responseBox.style.backgroundColor = 'rgba(192, 57, 43, 0.3)';
+             responseBox.style.borderColor = 'var(--noel-red)';
+        }
+        // -------------------------------------------------------------------
+    </script>
+</body>
+</html>

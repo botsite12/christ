@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="https://cdn.nhandan.vn/assets/web/styles/img/favicon.ico" type="image/x-icon">
+    <title>🎄 Lời Chúc Giáng Sinh từ Cường 🎁</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        :root {
+            --noel-red: #C0392B;
+            --noel-green: #2ECC71;
+            --noel-gold: #F39C12;
+            --background-dark: #1E1E1E;
+        }
+
+        body {
+            background-color: var(--background-dark);
+            color: #ECF0F1;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative; /* Quan trọng cho Merry Christmas */
+        }
+
+        /* Tiêu đề Merry Christmas */
+        #merry-christmas {
+            position: absolute;
+            top: 5vh; /* Điều chỉnh vị trí */
+            font-family: 'Brush Script MT', cursive; /* Font chữ mềm mại hơn */
+            font-size: 3em;
+            color: var(--noel-gold);
+            text-shadow: 0 0 15px rgba(243, 156, 18, 0.8), 0 0 5px rgba(243, 156, 18, 0.5);
+            letter-spacing: 3px;
+            z-index: 10;
+        }
+
+        /* Container cho cây thông 3D */
+        #tree-container {
+            width: 100vw;
+            height: 80vh; /* Chiều cao cho cây thông */
+            cursor: pointer;
+            position: relative;
+            display: flex; /* Cần để căn giữa nội dung bên trong */
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* Khung chứa ảnh đại diện và nhập tên */
+        #user-info-box {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 12px;
+            z-index: 10; 
+        }
+
+        #profile-picture {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px; /* Cạnh tròn cho hình vuông */
+            object-fit: cover;
+            border: 3px solid var(--noel-gold);
+            cursor: pointer;
+        }
+        
+        #photo-upload-label {
+            display: inline-block;
+            background-color: var(--noel-red);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 5px;
+            font-size: 0.9em;
+            transition: background-color 0.3s;
+        }
+        
+        #photo-upload-label:hover {
+            background-color: #922B21;
+        }
+
+        #photo-upload {
+            display: none; /* Ẩn input file */
+        }
+
+        #name-input {
+            width: 100%;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid var(--noel-green);
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        /* Nút "GIÁNG SINH AN LÀNH" */
+        #wish-button {
+            position: absolute;
+            bottom: 5vh; /* Điều chỉnh vị trí */
+            background-color: rgba(46, 204, 113, 0.6);
+            color: white;
+            padding: 15px 30px;
+            border: 2px solid var(--noel-gold);
+            border-radius: 30px; /* Bo tròn hoàn toàn */
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+            box-shadow: 0 0 15px rgba(243, 156, 18, 0.5);
+            z-index: 10;
+        }
+
+        #wish-button:hover {
+            background-color: rgba(46, 204, 113, 0.8);
+            transform: translateY(-3px);
+            box-shadow: 0 0 25px rgba(243, 156, 18, 0.8);
+        }
+
+        #wish-button .icon {
+            font-size: 1.5em;
+            color: var(--noel-gold);
+        }
+
+        /* Link liên kết cá nhân (mới) */
+        #my-link-bottom {
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 5px 10px;
+            font-size: 0.8em;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            z-index: 10;
+        }
+        #my-link-bottom:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1 id="merry-christmas">MERRY CHRISTMAS</h1>
+
+    <div id="user-info-box">
+        <img id="profile-picture" src="https://via.placeholder.com/80x80?text=Avatar" alt="Ảnh đại diện" title="Nhấn để tải ảnh">
+        <h1>phải tải lên Avatar để nhập </h1>
+        <input type="file" id="photo-upload" accept="image/*" onchange="previewImage(event)">
+        <label for="photo-upload" id="photo-upload-label">Tải ảnh lên</label>
+        <input type="text" id="name-input" placeholder="Nhập tên của bạn" oninput="saveName()">
+    </div>
+
+    <div id="tree-container"></div>
+    
+    <button id="wish-button">
+        <span class="icon">🎄</span> GIÁNG SINH AN LÀNH <span class="icon">🎁</span>
+    </button>
+    
+    <a id="my-link-bottom" href="#" target="_blank">Link Liên Kết Của Tôi</a>
+
+    <script>
+        const DESTINATION_URL = 'wishes.html';
+        const MY_LINK = 'https://www.facebook.com/bot.ahihi.505/'; 
+        const DEFAULT_AVATAR = 'https://via.placeholder.com/80x80?text=Tải+Ảnh'; // URL ảnh mặc định
+
+        let scene, camera, renderer, tree;
+        let particles, particleMaterial;
+        let isTreeRotating = false;
+        
+        // --- CÁC BIẾN KIỂM TRA BẮT BUỘC ---
+        let isNameEntered = false;
+        let isImageUploaded = false;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedName = localStorage.getItem('userName');
+            const savedImage = localStorage.getItem('userImage');
+            
+            // Khôi phục và kiểm tra trạng thái
+            if (savedName) {
+                document.getElementById('name-input').value = savedName;
+                isNameEntered = true;
+            }
+            
+            if (savedImage) {
+                document.getElementById('profile-picture').src = savedImage;
+                isImageUploaded = true;
+            } else {
+                document.getElementById('profile-picture').src = DEFAULT_AVATAR; 
+            }
+            
+            initThreeJS();
+            document.getElementById('my-link-bottom').href = MY_LINK;
+            
+            // Vô hiệu hóa ban đầu và cập nhật trạng thái
+            updateInteractionStatus();
+
+            // Gắn sự kiện click cho ảnh và nút
+            document.getElementById('profile-picture').addEventListener('click', () => {
+                document.getElementById('photo-upload').click();
+            });
+            document.getElementById('wish-button').addEventListener('click', handleWishClick);
+            
+            // Gắn sự kiện cho cây thông (sẽ được kích hoạt sau)
+            document.getElementById('tree-container').addEventListener('click', handleWishClick);
+        });
+
+        // --- Hàm kiểm tra và cập nhật trạng thái tương tác ---
+
+        function updateInteractionStatus() {
+            const isReady = isNameEntered && isImageUploaded;
+            const treeContainer = document.getElementById('tree-container');
+            const wishButton = document.getElementById('wish-button');
+
+            if (isReady) {
+                // Kích hoạt
+                wishButton.disabled = false;
+                wishButton.style.opacity = 1;
+                treeContainer.style.cursor = 'pointer';
+                wishButton.title = 'Nhấn để tiếp tục!';
+            } else {
+                // Vô hiệu hóa
+                wishButton.disabled = true;
+                wishButton.style.opacity = 0.5; // Làm mờ để thể hiện đã bị vô hiệu hóa
+                treeContainer.style.cursor = 'not-allowed';
+                wishButton.title = 'Vui lòng nhập tên và tải ảnh lên!';
+            }
+        }
+
+        function handleWishClick(event) {
+            if (!isNameEntered) {
+                alert('Vui lòng nhập tên của bạn để nhận lời chúc!');
+                document.getElementById('name-input').focus();
+                event.stopPropagation();
+                return;
+            }
+            if (!isImageUploaded) {
+                alert('Vui lòng tải ảnh đại diện lên để cá nhân hóa lời chúc!');
+                document.getElementById('photo-upload-label').focus();
+                event.stopPropagation();
+                return;
+            }
+            
+            // Nếu đã sẵn sàng, chuyển trang
+            window.location.href = DESTINATION_URL;
+        }
+
+        // --- Hàm Tải ảnh và Lưu trữ ---
+
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const imageUrl = e.target.result;
+                    document.getElementById('profile-picture').src = imageUrl;
+                    localStorage.setItem('userImage', imageUrl);
+                    isImageUploaded = true; // Đánh dấu đã tải ảnh
+                    updateInteractionStatus();
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        function saveName() {
+            const name = document.getElementById('name-input').value.trim();
+            localStorage.setItem('userName', name);
+            isNameEntered = name.length > 0; // Đánh dấu đã nhập tên
+            updateInteractionStatus();
+        }
+
+        // --- CÁC CHỨC NĂNG THREE.JS (GIỮ NGUYÊN) ---
+        
+        function initThreeJS() {
+            const container = document.getElementById('tree-container');
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x000000); 
+
+            camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+            camera.position.z = 5;
+
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(width, height);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            container.appendChild(renderer.domElement);
+            
+            window.addEventListener('resize', () => {
+                const newWidth = container.clientWidth;
+                const newHeight = container.clientHeight;
+                renderer.setSize(newWidth, newHeight);
+                camera.aspect = newWidth / newHeight;
+                camera.updateProjectionMatrix();
+            });
+
+            const ambientLight = new THREE.AmbientLight(0x404040, 5); 
+            scene.add(ambientLight);
+            
+            const starGeometry = new THREE.IcosahedronGeometry(0.3); 
+            const starMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0xF39C12, 
+                emissive: 0xF39C12, 
+                emissiveIntensity: 3 
+            });
+            const star = new THREE.Mesh(starGeometry, starMaterial);
+            star.position.y = 4.3; 
+            
+            tree = new THREE.Group();
+            tree.add(star);
+            scene.add(tree);
+
+            createParticleTree(tree);
+
+            animate();
+        }
+
+        function createParticleTree(treeGroup) {
+            const particleCount = 10000; 
+            const positions = new Float32Array(particleCount * 3);
+            const colors = new Float32Array(particleCount * 3);
+
+            const color1 = new THREE.Color(0xF39C12); 
+            const color2 = new THREE.Color(0xC0392B); 
+            const color3 = new THREE.Color(0xFFFFFF); 
+
+            for (let i = 0; i < particleCount; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const radius = Math.random() * 1.5; 
+                let y = Math.random() * 4; 
+
+                const maxRadiusAtY = (1 - (y / 4)) * 1.5; 
+                const currentRadius = Math.random() * maxRadiusAtY;
+
+                positions[i * 3] = Math.cos(angle) * currentRadius;
+                positions[i * 3 + 1] = y - 0.5; 
+                positions[i * 3 + 2] = Math.sin(angle) * currentRadius;
+
+                const r = Math.random();
+                if (r < 0.4) {
+                    color1.toArray(colors, i * 3); 
+                } else if (r < 0.8) {
+                    color2.toArray(colors, i * 3); 
+                } else {
+                    color3.toArray(colors, i * 3); 
+                }
+            }
+
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            particleMaterial = new THREE.PointsMaterial({
+                size: 0.08, 
+                vertexColors: true, 
+                blending: THREE.AdditiveBlending, 
+                transparent: true,
+                opacity: 0.8 
+            });
+
+            particles = new THREE.Points(geometry, particleMaterial);
+            treeGroup.add(particles);
+        }
+
+        function animate(time) {
+            requestAnimationFrame(animate);
+
+            if (isTreeRotating) {
+                tree.rotation.y += 0.01;
+            } else {
+                tree.rotation.y += 0.002; 
+            }
+            
+            renderer.render(scene, camera);
+        }
+        
+        document.getElementById('tree-container').addEventListener('mouseenter', () => {
+            isTreeRotating = true;
+        });
+        document.getElementById('tree-container').addEventListener('mouseleave', () => {
+            isTreeRotating = false;
+        });
+    </script>
+</body>
+</html>
